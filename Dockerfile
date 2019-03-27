@@ -2,10 +2,11 @@ FROM alpine
 
 LABEL MAINTAINER Jorge Pabón <pianistapr@hotmail.com>
 
-# Set Environment variables to use
-#ENV fpm_conf	/etc/php7/php-fpm.d/www.conf
-#ENV php_ini	/etc/php7/php.ini
+# Specify which version of Nginx to build
 ENV NGINX_VERSION 1.15.10
+
+# Specify the TimeZone to use
+ENV TIMEZONE="America/New_York"
 
 # Make sure Git is installed
 RUN apk update && apk upgrade && apk add git
@@ -13,9 +14,6 @@ RUN apk update && apk upgrade && apk add git
 # Download the VTS Module
 RUN cd /
 RUN git clone git://github.com/vozlt/nginx-module-vts.git
-
-# Make necessary directories
-RUN mkdir /app
 
 # Build Nginx
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
@@ -151,16 +149,21 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log
 
+# Copy Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
-#COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
-#COPY GeoIP.dat /usr/share/GeoIP/GeoIP.dat
 
-EXPOSE 80
+# Copy the GeoIP data file
+COPY GeoIP.dat /usr/share/GeoIP/GeoIP.dat
+
+# Make app directory
+RUN mkdir /app
+RUN echo "Your application files should reside in /app" > /app/index.html
+
+EXPOSE 80 443
 
 STOPSIGNAL SIGTERM
 
 CMD ["nginx", "-g", "daemon off;"]
-
 
 # Build
 # docker build .
@@ -168,3 +171,5 @@ CMD ["nginx", "-g", "daemon off;"]
 # docker tag <img #> <name>
 # Run
 # docker run -d -it --name <container name> -p <local>:<container> <img name>
+# Terminal into the container
+# docker exec -it <conainer name> sh
