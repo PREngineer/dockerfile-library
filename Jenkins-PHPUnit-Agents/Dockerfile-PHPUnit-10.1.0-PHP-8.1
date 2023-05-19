@@ -62,7 +62,8 @@ RUN apk --no-cache add \
     # If you can't find the xdebug.ini file, list everything related to PHP and look at the logs
     #&& ls -R /etc/php* \
     # Enable X-Debug
-    && sed -i 's/\;z/z/g' /etc/php81/conf.d/50_xdebug.ini \
+    && apk add php81-pecl-xdebug \
+    && docker-php-ext-enable xdebug \
     && php -m | grep -i xdebug
 
 # Switch to the /App directory
