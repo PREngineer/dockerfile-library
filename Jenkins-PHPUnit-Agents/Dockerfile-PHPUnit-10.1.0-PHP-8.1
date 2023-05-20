@@ -66,8 +66,8 @@ RUN apk --no-cache add \
     && apk add --update linux-headers \
     && pecl install xdebug-3.1.5 \
     && docker-php-ext-enable xdebug \
-    &&& apk del -f .build-deps \
-    # Configure Xdebug
+    && apk del -f .build-deps \
+    # Configure X-Debug
     && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.log=/var/www/html/xdebug/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini \
