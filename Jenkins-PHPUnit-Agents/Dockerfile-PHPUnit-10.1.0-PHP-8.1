@@ -62,8 +62,17 @@ RUN apk --no-cache add \
     # If you can't find the xdebug.ini file, list everything related to PHP and look at the logs
     #&& ls -R /etc/php* \
     # Enable X-Debug
-    && apk add php81-pecl-xdebug \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install xdebug \
     && docker-php-ext-enable xdebug \
+    && apk del -f .build-deps
+    # Configure Xdebug
+    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.log=/var/www/html/xdebug/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.discover_client_host=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini
+    && sed -i 's/\;z/z/g' /etc/php81/conf.d/50_xdebug.ini \
     && php -m | grep -i xdebug
 
 # Switch to the /App directory
