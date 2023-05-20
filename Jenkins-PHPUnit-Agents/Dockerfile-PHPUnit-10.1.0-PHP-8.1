@@ -1,5 +1,5 @@
-# Use the latest alpine image
-FROM alpine:latest
+# Use the latest alpine image from PHP
+FROM php:8.1.19-fpm-alpine
 
 LABEL mantainer="Jorge Pabón <pianistapr@hotmail.com>" description="A Jenkins agent to run tests using PHPUnit 10.1.0, PHP 8.1."
 
@@ -14,10 +14,10 @@ RUN apk --no-cache add \
         ca-certificates \
         # We need composer to set up PHPUnit
         composer \
-        # Will be using PHP 8.1
-        php81 \
+        linux-headers \
         # Add dependencies for PHP 8.1
         php81-bcmath \
+        php81-calendar \
         php81-ctype \
         php81-curl \
         php81-dom \
@@ -47,23 +47,27 @@ RUN apk --no-cache add \
         php81-xmlwriter \
         php81-zip \
         php81-zlib \
-    # We also use PEAR
-    && php -r "copy('https://pear.php.net/go-pear.phar', 'go-pear.phar');" \
-    && php go-pear.phar \
-    && php -r "unlink('go-pear.phar');"
-    
-    # Install PHPUnit 10.1.0 using composer
-    RUN composer require "phpunit/phpunit:10.1.0" --prefer-source --no-interaction \
-    && composer require "phpunit/php-invoker" --prefer-source --no-interaction \
-    # Install into /usr/local/bin/phpunit
-    && ln -s /tmp/vendor/bin/phpunit /usr/local/bin/phpunit \
-    # Add name to PHPUnit providers
-    && sed -i 's/nn and/nn, Jorge Pabón, and/g' /tmp/vendor/phpunit/phpunit/src/Runner/Version.php \
-    # If you can't find the xdebug.ini file, list everything related to PHP and look at the logs
-    #&& ls -R /etc/php* \
-    # Add X-Debug
-    && apk add --no-cache php81-pecl-xdebug
+# We also use PEAR
+&& php -r "copy('https://pear.php.net/go-pear.phar', 'go-pear.phar');" \
+&& php go-pear.phar \
+&& php -r "unlink('go-pear.phar');"
 
+# Install PHPUnit 10.1.0 using composer
+RUN composer require "phpunit/phpunit:10.1.0" --prefer-source --no-interaction \
+&& composer require "phpunit/php-invoker" --prefer-source --no-interaction \
+# Install into /usr/local/bin/phpunit
+&& ln -s /tmp/vendor/bin/phpunit /usr/local/bin/phpunit \
+# Add name to PHPUnit providers
+&& sed -i 's/nn and/nn, Jorge Pabón, and/g' /tmp/vendor/phpunit/phpunit/src/Runner/Version.php
+
+# Install X-Debug
+RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} \ 
+&& pecl install xdebug \
+&& docker-php-ext-enable xdebug \
+&& apk del pcre-dev ${PHPIZE_DEPS}
+# To validate it was installed, run in the container:
+# php -m | grep xdebug
+    
 # Switch to the /App directory
 WORKDIR /App
 
