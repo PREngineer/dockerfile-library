@@ -50,8 +50,9 @@ RUN apk --no-cache add \
   && php -r "unlink('go-pear.phar');"
 
 # Install PHPUnit 10.1.0 using composer
-RUN composer require "phpunit/phpunit:10.1.0" --prefer-source --no-interaction \
-&& composer require "phpunit/php-invoker" --prefer-source --no-interaction \
+RUN composer require "phpunit/phpunit:10.1.0" --prefer-source --no-interaction
+# Install PHPUnit/PHP-Invoker using composer
+RUN composer require "phpunit/php-invoker" --prefer-source --no-interaction \
 # Install into /usr/local/bin/phpunit
 && ln -s /tmp/vendor/bin/phpunit /usr/local/bin/phpunit \
 # Add name to PHPUnit providers
