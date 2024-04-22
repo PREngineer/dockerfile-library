@@ -39,7 +39,7 @@ podTemplate(yaml: '''
       container('kaniko') {
         stage('Build and Push') {
           sh '''
-            /kaniko/executor --context "`pwd`" --dockerfile=./Jenkins-PHPUnit-Agents/Dockerfile-PHPUnit-10.1.0-PHP-8.1 --destination prengineer/jenkins-agent-php-8.1:ARM64
+            /kaniko/executor --context "`pwd`" --dockerfile=./Jenkins/Agents/PHPUnit/8.1/Dockerfile-ARM64 --destination prengineer/jenkins-agent-php-8.1:ARM64
           '''
         }
       }
