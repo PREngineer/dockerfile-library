@@ -10,7 +10,7 @@ WORKDIR /tmp
 # When installing packages from APK
 # Do not use GIT! It will include a lot of unnecessary stuff from the repos that will make your image gigantic ~3GB
 ###################################################################################################################
-RUN /bin/sh -c apk --no-cache add \
+RUN apk --no-cache add \
   ca-certificates \
   # We need composer to set up PHPUnit
   composer \
@@ -53,7 +53,7 @@ RUN /bin/sh -c apk --no-cache add \
   && php -r "unlink('go-pear.phar');"
 
 # Install PHPUnit 10.1.0 using composer
-RUN /bin/sh -c composer require "phpunit/phpunit:10.1.0" --prefer-source --no-interaction \
+RUN composer require "phpunit/phpunit:10.1.0" --prefer-source --no-interaction \
 && composer require "phpunit/php-invoker" --prefer-source --no-interaction \
 # Install into /usr/local/bin/phpunit
 && ln -s /tmp/vendor/bin/phpunit /usr/local/bin/phpunit \
@@ -61,7 +61,7 @@ RUN /bin/sh -c composer require "phpunit/phpunit:10.1.0" --prefer-source --no-in
 && sed -i 's/nn and/nn, Jorge Pabón, and/g' /tmp/vendor/phpunit/phpunit/src/Runner/Version.php
 
 # Install X-Debug
-RUN /bin/sh -c apk --no-cache add pcre-dev ${PHPIZE_DEPS} \ 
+RUN apk --no-cache add pcre-dev ${PHPIZE_DEPS} \ 
 && pecl install xdebug \
 && docker-php-ext-enable xdebug \
 && apk del pcre-dev ${PHPIZE_DEPS} \
@@ -79,4 +79,4 @@ WORKDIR /App
 ENTRYPOINT ["/bin/sh"]
 
 # How to call:
-# docker build -t prengineer/jenkins-php8.1:latest . -f Dockerfile-PHPUnit-10.1.0-PHP-8.1
+# docker build -t prengineer/jenkins-php-agent:8.1-x64 . -f Dockerfile
