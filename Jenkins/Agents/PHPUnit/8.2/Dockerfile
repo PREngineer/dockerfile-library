@@ -1,7 +1,7 @@
 # Use the latest alpine image from PHP
-FROM php:8.1.19-fpm-alpine
+FROM php:8.2.18-fpm-alpine
 
-LABEL mantainer="Jorge Pabón <pianistapr@hotmail.com>" description="A Jenkins agent to run tests using PHPUnit 10.1.0, PHP 8.1."
+LABEL mantainer="Jorge Pabón <pianistapr@hotmail.com>" description="A Jenkins agent to run tests using PHPUnit 11.1.0, PHP 8.2."
 
 # Start on the /tmp folder
 WORKDIR /tmp
@@ -15,45 +15,45 @@ RUN apk --no-cache add \
   # We need composer to set up PHPUnit
   composer \
   linux-headers \
-  # Add dependencies for PHP 8.1
-  php81-bcmath \
-  php81-calendar \
-  php81-ctype \
-  php81-curl \
-  php81-dom \
-  php81-exif \
-  php81-fileinfo \
-  php81-json \
-  php81-mbstring \
-  php81-mysqli \
-  php81-opcache \
-  php81-openssl \
-  php81-pcntl \
-  php81-pdo \
-  php81-pdo_dblib \
-  php81-pdo_mysql \
-  php81-pdo_odbc \
-  php81-pdo_pgsql \
-  php81-pdo_sqlite \
-  php81-pecl-memcache \
-  php81-phar \
-  php81-session \
-  php81-simplexml \
-  php81-soap \
-  php81-tokenizer \
-  php81-xdebug \
-  php81-xml \
-  php81-xmlreader \
-  php81-xmlwriter \
-  php81-zip \
-  php81-zlib \
+  # Add dependencies for PHP 8.2
+  php82-bcmath \
+  php82-calendar \
+  php82-ctype \
+  php82-curl \
+  php82-dom \
+  php82-exif \
+  php82-fileinfo \
+  php82-json \
+  php82-mbstring \
+  php82-mysqli \
+  php82-opcache \
+  php82-openssl \
+  php82-pcntl \
+  php82-pdo \
+  php82-pdo_dblib \
+  php82-pdo_mysql \
+  php82-pdo_odbc \
+  php82-pdo_pgsql \
+  php82-pdo_sqlite \
+  php82-pecl-memcache \
+  php82-phar \
+  php82-session \
+  php82-simplexml \
+  php82-soap \
+  php82-tokenizer \
+  php82-xdebug \
+  php82-xml \
+  php82-xmlreader \
+  php82-xmlwriter \
+  php82-zip \
+  php82-zlib \
   # We also use PEAR
   && php -r "copy('https://pear.php.net/go-pear.phar', 'go-pear.phar');" \
   && php go-pear.phar \
   && php -r "unlink('go-pear.phar');"
 
-# Install PHPUnit 10.5.0 using composer
-RUN composer require "phpunit/phpunit:10.5.0" --prefer-source --no-interaction \
+# Install PHPUnit 11.1.0 using composer
+RUN composer require "phpunit/phpunit:11.1.0" --prefer-source --no-interaction \
 && composer require "phpunit/php-invoker" --prefer-source --no-interaction \
 # Install into /usr/local/bin/phpunit
 && ln -s /tmp/vendor/bin/phpunit /usr/local/bin/phpunit \
@@ -79,7 +79,7 @@ WORKDIR /App
 ENTRYPOINT ["/bin/sh"]
 
 # How to build for single architecture:
-# docker build -t prengineer/jenkins-php-agent:8.1 . -f Dockerfile
+# docker build -t prengineer/jenkins-php-agent:8.2 . -f Dockerfile
 
 # How to build for multi architecture:
-# docker buildx build --push --platform=linux/amd64,linux/arm64 -t prengineer/jenkins-php-agent:8.1 -f Dockerfile .
+# docker buildx build --push --platform=linux/amd64,linux/arm64 -t prengineer/jenkins-php-agent:8.2 -f Dockerfile .
