@@ -79,7 +79,9 @@ WORKDIR /App
 ENTRYPOINT ["/bin/sh"]
 
 # How to build for single architecture:
+# docker login -u <USERNAME> -p <PAT>
 # docker build -t prengineer/jenkins-php-agent:8.1 . -f Dockerfile
 
 # How to build for multi architecture:
+# docker login -u <USERNAME> -p <PAT>
 # docker buildx build --push --platform=linux/amd64,linux/arm64 -t prengineer/jenkins-php-agent:8.1 -f Dockerfile .
